@@ -149,11 +149,16 @@ func MotdJava(Host string) (MotdJavaInfo, error) {
 	//区分Motd
 	var MotdTextJson map[string]interface{}
 	var MotdText string
+	
 	if err = json.Unmarshal(resp.Description, &MotdTextJson); err != nil {
 		//如果服务器直接返回Motd，则直接解析Json到MotdText
 		json.Unmarshal(resp.Description, &MotdText)
 	} else {
-		MotdText = MotdTextJson["text"].(string)
+		if MotdTextJson["text"] != nil{
+			MotdText = MotdTextJson["text"].(string)
+		}else{
+			MotdText = MotdTextJson["translate"].(string)
+		}
 	}
 
 	//对返回进行二次封装
